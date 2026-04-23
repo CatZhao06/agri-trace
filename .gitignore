@@ -55,4 +55,7 @@ ewem-ui/.cache/
 *.docx
 *.png
 *.puml
-*.xml (except pom.xml)
+
+######################################################################
+# Old project directory (to be removed)
+ewem-fabric-trace-java/
