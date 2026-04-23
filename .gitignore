@@ -41,7 +41,7 @@ ewem-ui/dist/
 ewem-ui/.cache/
 
 ######################################################################
-# Others
+# Documentation and Design Files (allow design diagrams)
 *.log
 *.xml.versionsBackup
 *.swp
@@ -50,11 +50,13 @@ ewem-ui/.cache/
 !*/build/*.html
 !*/build/*.xml
 
-######################################################################
-# Documentation and Design Files
-*.docx
-*.png
-*.puml
+# Allow design and documentation files
+!*.png
+!*.docx
+!*.puml
+!*.drawio
+!*.drawio.svg
+!*.md
 
 ######################################################################
 # Old project directory (to be removed)

@@ -1,0 +1,116 @@
+@startuml
+' 核心ER类图 - 遵循UML 2.0标准
+' 忽略Ruoyi框架，仅包含核心业务实体
+
+' 样式定义
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #F9F9F9
+skinparam classBorderColor #D3D3D3
+skinparam classFontSize 14
+skinparam classFontName Arial
+skinparam arrowThickness 1.5
+skinparam arrowColor #666666
+skinparam showStereotype true
+
+' 实体定义
+
+' 产品管理
+class Product <<实体>> {
+  - code: String
+  - name: String
+  - barCode: String
+  - categoryId: Long
+  - attrs: List<BaseAttrs>
+  - content: String
+  - img: String
+  - video: String
+  - remark: String
+}
+
+' 产品分类
+class Category <<实体>> {
+  - name: String
+  - img: String
+  - remark: String
+}
+
+' 批次
+class Batch <<实体>> {
+  - number: String
+  - productId: Long
+  - remark: String
+}
+
+' 码管理
+class Code <<实体>> {
+  - code: String
+  - antiCode: String
+  - batchId: Long
+  - scanNum: Integer
+  - firstScanTime: Date
+  - delFlag: String
+  - traceType: String
+}
+
+' 扫码记录
+class ScanLog <<实体>> {
+  - id: Long
+  - code: String
+  - longitude: String
+  - latitude: String
+  - userName: String
+  - scanTime: Date
+  - createTime: Date
+}
+
+' 环节模板
+class Link <<实体>> {
+  - name: String
+  - showName: String
+  - orderNum: Integer
+  - visible: String
+  - remark: String
+}
+
+' 批次环节记录
+class BatchLink <<实体>> {
+  - batchId: Long
+  - linkId: Long
+  - attrs: List<BaseAttrs>
+  - remark: String
+}
+
+' 码申请
+class Apply <<实体>> {
+  - name: String
+  - quantity: Long
+  - applyStatus: String
+  - batchId: Long
+  - remark: String
+  - antiLength: Integer
+  - traceType: String
+}
+
+' 关系定义
+' 产品与分类：多对一
+Product "n" -- "1" Category : categoryId
+
+' 批次与产品：多对一
+Batch "n" -- "1" Product : productId
+
+' 码与批次：多对一
+Code "n" -- "1" Batch : batchId
+
+' 扫码记录与码：多对一
+ScanLog "n" -- "1" Code : code
+
+' 批次环节与批次：多对一
+BatchLink "n" -- "1" Batch : batchId
+
+' 批次环节与环节模板：多对一
+BatchLink "n" -- "1" Link : linkId
+
+' 码申请与批次：多对一
+Apply "n" -- "1" Batch : batchId
+
+@enduml
