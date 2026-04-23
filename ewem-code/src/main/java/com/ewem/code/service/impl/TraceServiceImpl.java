@@ -59,24 +59,41 @@ public class TraceServiceImpl implements ITraceService {
     public AjaxResult trace(String c) {
         Code code = codeService.selectCodeByCode(c);
         if (StringUtils.isEmpty(code)) {
-            log.error("错误码 {}", code);
-            return AjaxResult.error("错误码");
+            log.error("错误码 {}", c);
+            return AjaxResult.error("错误的溯源码");
         }
         if (StringUtils.isEmpty(code.getBatch()) || StringUtils.isEmpty(code.getBatch().getProductId())) {
             log.error("批次产品错误,code:{},code info:{}", c, JsonUtils.toJsonString(code));
-            return AjaxResult.success();
+            return AjaxResult.error("溯源码信息不完整");
         }
         List<BatchLinkVO> links;
         if (TraceType.FABRIC.getCode().equals(code.getTraceType())) {
             //区块链溯源
-            links = fabricDao.getFruitInfo(code.getBatchId().toString());
+            try {
+                links = fabricDao.getFruitInfo(code.getBatchId().toString());
+            } catch (Exception e) {
+                log.error("查询区块链溯源信息失败", e);
+                return AjaxResult.error("区块链网络连接失败，请稍后重试");
+            }
         } else {
             BatchLink batchLink = new BatchLink();
             batchLink.setBatchId(code.getBatchId());
             links = batchLinkService.queryBatchLinkVOList(batchLink);
         }
-        links = links.stream().filter(l -> l.getLink().getVisible().equals("0")).collect(Collectors.toList());
-        links.sort(Comparator.comparing(o -> o.getLink().getOrderNum()));
+        
+        if (links == null) {
+            links = new ArrayList<>();
+        }
+        
+        // 过滤掉 link 为 null 的记录，并筛选可见的环节
+        links = links.stream()
+                .filter(l -> l.getLink() != null && "0".equals(l.getLink().getVisible()))
+                .collect(Collectors.toList());
+        
+        // 排序，处理 orderNum 可能为 null 的情况
+        if (!links.isEmpty()) {
+            links.sort(Comparator.comparing(o -> o.getLink().getOrderNum(), Comparator.nullsLast(Comparator.naturalOrder())));
+        }
 
         // 设置扫码次数及时间
         code.setScanNum(code.getScanNum() + 1);

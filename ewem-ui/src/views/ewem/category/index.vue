@@ -77,7 +77,12 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="状态" align="center" prop="id" v-if="false"/>
       <el-table-column label="名称" align="center" prop="name" />
-      <el-table-column label="图片" align="center" prop="img" />
+      <el-table-column label="图片" align="center">
+        <template slot-scope="scope">
+          <img v-if="scope.row.img" :src="baseUrl + scope.row.img" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" />
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
       <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -184,7 +189,9 @@ export default {
         status: [
           { required: true, message: "状态不能为空", trigger: "blur" }
         ],
-      }
+      },
+      // 基础API地址
+      baseUrl: process.env.VUE_APP_BASE_API
     };
   },
   created() {
