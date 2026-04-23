@@ -20,7 +20,7 @@ target/
 .springBeans
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -34,6 +34,13 @@ nbdist/
 .nb-gradle/
 
 ######################################################################
+# Node.js
+node_modules/
+ewem-ui/node_modules/
+ewem-ui/dist/
+ewem-ui/.cache/
+
+######################################################################
 # Others
 *.log
 *.xml.versionsBackup
@@ -42,3 +49,10 @@ nbdist/
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+
+######################################################################
+# Documentation and Design Files
+*.docx
+*.png
+*.puml
+*.xml (except pom.xml)
